@@ -390,6 +390,18 @@ export const gradeService = {
     }
     return data
   },
+
+  async upsertMany(grades: Partial<Grade>[]): Promise<boolean> {
+    const { error } = await supabase
+      .from('grades')
+      .upsert(grades)
+    
+    if (error) {
+      console.error('Error upserting grades:', error)
+      return false
+    }
+    return true
+  },
 }
 
 // ============================================================================
@@ -425,6 +437,20 @@ export const attendanceService = {
     return data || []
   },
 
+  async getBySubjectAndDate(subjectId: string, date: string): Promise<Attendance[]> {
+    const { data, error } = await supabase
+      .from('attendances')
+      .select('*')
+      .eq('subject_id', subjectId)
+      .eq('attendance_date', date)
+    
+    if (error) {
+      console.error('Error fetching attendances by subject and date:', error)
+      return []
+    }
+    return data || []
+  },
+
   async create(attendance: Partial<Attendance>): Promise<Attendance | null> {
     const { data, error } = await supabase
       .from('attendances')
@@ -452,6 +478,18 @@ export const attendanceService = {
       return null
     }
     return data
+  },
+
+  async upsertMany(attendances: Partial<Attendance>[]): Promise<boolean> {
+    const { error } = await supabase
+      .from('attendances')
+      .upsert(attendances)
+    
+    if (error) {
+      console.error('Error upserting attendances:', error)
+      return false
+    }
+    return true
   },
 }
 
@@ -550,3 +588,23 @@ export const subjectService = {
     return data
   },
 }
+
+// ============================================================================
+// PERÍODOS DE CALIFICACIÓN
+// ============================================================================
+
+export const gradingPeriodService = {
+  async getByAcademicYear(academicYearId: string): Promise<GradingPeriod[]> {
+    const { data, error } = await supabase
+      .from('grading_periods')
+      .select('*')
+      .eq('academic_year_id', academicYearId)
+    
+    if (error) {
+      console.error('Error fetching grading periods:', error)
+      return []
+    }
+    return data || []
+  }
+}
+
