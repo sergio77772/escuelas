@@ -94,7 +94,7 @@ export default function GradesPage() {
 
       periodGrades.forEach(g => {
         gradesMap[g.student_id] = g
-        draftMap[g.student_id] = g.grade
+        draftMap[g.student_id] = g.grade ?? ''
         statusMap[g.student_id] = g.status
       })
 
