@@ -118,7 +118,7 @@ export default function AttendancePage() {
         const statusValue = draftStatuses[student.id]
 
         return {
-          id: existingAttendance?.id,
+          id: existingAttendance?.id || crypto.randomUUID(),
           student_id: student.id,
           subject_id: selectedSubjectId,
           attendance_date: selectedDate,
