@@ -27,18 +27,26 @@ export default function DashboardPage() {
       if (!user?.establishment_id) return
 
       try {
-        const [students, grades, attendances, years] = await Promise.all([
-          studentService.getByEstablishment(user.establishment_id),
-          gradeService.getByStudent(''), // Esto necesitaría refactorización
-          attendanceService.getByStudent(''),
-          academicYearService.getByEstablishment(user.establishment_id),
+        const { createClient } = await import('@/lib/supabase/client')
+        const supabase = createClient()
+
+        const [
+          { count: studentsCount },
+          { count: gradesCount },
+          { count: attendancesCount },
+          { count: yearsCount }
+        ] = await Promise.all([
+          supabase.from('students').select('*', { count: 'exact', head: true }).eq('establishment_id', user.establishment_id),
+          supabase.from('grades').select('id, students!inner(establishment_id)', { count: 'exact', head: true }).eq('students.establishment_id', user.establishment_id),
+          supabase.from('attendances').select('id, students!inner(establishment_id)', { count: 'exact', head: true }).eq('students.establishment_id', user.establishment_id),
+          supabase.from('academic_years').select('*', { count: 'exact', head: true }).eq('establishment_id', user.establishment_id)
         ])
 
         setStats({
-          totalStudents: students.length,
-          totalGrades: 0, // Calcular después
-          totalAttendances: 0,
-          academicYears: years.length,
+          totalStudents: studentsCount || 0,
+          totalGrades: gradesCount || 0,
+          totalAttendances: attendancesCount || 0,
+          academicYears: yearsCount || 0,
         })
       } catch (error) {
         console.error('Error loading stats:', error)

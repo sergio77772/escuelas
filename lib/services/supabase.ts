@@ -338,7 +338,7 @@ export const gradeService = {
   async getByStudent(studentId: string): Promise<Grade[]> {
     const { data, error } = await supabase
       .from('grades')
-      .select('*')
+      .select('*, subjects(*)')
       .eq('student_id', studentId)
       .order('created_at', { ascending: false })
     
@@ -412,7 +412,7 @@ export const attendanceService = {
   async getByStudent(studentId: string): Promise<Attendance[]> {
     const { data, error } = await supabase
       .from('attendances')
-      .select('*')
+      .select('*, subjects(*)')
       .eq('student_id', studentId)
       .order('attendance_date', { ascending: false })
     
