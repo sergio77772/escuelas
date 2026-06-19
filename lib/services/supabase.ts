@@ -8,7 +8,8 @@ import {
   Division,
   AcademicYear,
   AppUser,
-  Establishment
+  Establishment,
+  GradingPeriod
 } from '@/lib/types'
 
 const supabase = createClient()
