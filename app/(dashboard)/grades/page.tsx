@@ -132,16 +132,21 @@ export default function GradesPage() {
         const gradeValue = draftGrades[student.id]
         const statusValue = draftStatuses[student.id] || 'pending'
 
+        // If it's a completely untouched cell, don't include it in the bulk upsert
+        if (!existingGrade && (gradeValue === undefined || gradeValue === '')) {
+          return null
+        }
+
         return {
-          id: existingGrade?.id, // Supabase upsert needs id if updating
+          id: existingGrade?.id || crypto.randomUUID(), // Always provide an ID for bulk upsert to work
           student_id: student.id,
           subject_id: selectedSubjectId,
           period: selectedPeriodName,
-          grade: gradeValue === '' ? null : gradeValue,
+          grade: gradeValue === '' ? null : (gradeValue ?? null),
           status: statusValue,
           recorded_by: user.id
         }
-      }).filter(g => g.grade !== null) // Only save if a grade is provided
+      }).filter(g => g !== null) as Partial<Grade>[]
 
       if (updates.length === 0) {
         setSaving(false)

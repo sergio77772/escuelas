@@ -113,7 +113,7 @@ export interface Grade {
   student_id: string
   subject_id: string
   period: string
-  grade: number
+  grade: number | null
   status: 'pending' | 'approved' | 'in_progress' | 'failed'
   recorded_by: string | null
   created_at: string
